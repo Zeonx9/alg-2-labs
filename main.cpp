@@ -5,6 +5,7 @@
 #include <iostream>
 #include <chrono>
 #include <fstream>
+#include <iomanip>
 
 // aliases used for better readability
 using Row = std::vector<int>;
@@ -29,20 +30,36 @@ long long int timeOfAlg(bool (*alg)(const Matrix &, int), const Matrix &matrix, 
 // performs all the tests, saves the data in file 'dat_alg.csv')
 // column 'ratio' is not filled automatically
 int main() {
+    using DataRow = std::vector<long double>;
+    using Table = std::vector<DataRow>;
+
     std::vector<bool (*)(const Matrix&, int)> algs {containsLin, containsBin, containsExp};
+    Table data(13, DataRow (6, 0));
+    const int N = 1 << 13;
+    const double TIMES = 100.0;
+
+    // testing algorithms and save results into Table data
+    for (int M = 2, i = 0; M <= N; M <<= 1, ++i) {
+        std::cout << M << "\n";
+        data[i][0] = M;
+        auto matrix1 = generate(M, N), matrix2 = generate(M, N, 2);
+        for (int k = 0; k < TIMES; ++k) {
+            for (int j = 0; j < algs.size(); ++j) {
+                data[i][j + 1] += (long double) timeOfAlg(algs[j], matrix1, 2 * N + 1) / TIMES;
+            }
+            data[i][4] += (long double) timeOfAlg(algs[2], matrix2, 16 * N + 1) / TIMES;
+        }
+        data[i][5] = data[i][2] / data[i][3];
+    }
+
     std::ofstream output("../results/dat_alg.csv");
     output << "M; linear; binary; exponential 1; exponential 2; ratio \n";
-    auto sep = "; ";
-
-    int n = 1 << 13;
-    for (int m = 2; m <= n; m <<= 1) {
-        std::cout << m << "\n";
-        auto matrix1 = generate(m, n), matrix2 = generate(m, n, 2);
-        output << m << sep;
-        for (auto &alg : algs) {
-            output << timeOfAlg(alg, matrix1, 2 * n + 1) << sep;
+    const auto sep = "; ";
+    for (int i = 0; i < 13; ++i) {
+        for (int j = 0; j < 6; ++j) {
+            output << std::setw(15) << data[i][j] << sep;
         }
-        output << timeOfAlg(containsExp, matrix2, 16 * n + 1) << "\n";
+        output << "\n";
     }
     output.close();
     return 0;
