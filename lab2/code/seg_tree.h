@@ -6,29 +6,32 @@
 #define LAB1_ALG2_SEG_TREE_H
 
 
-#include <iostream>
+#include <memory>
 
 class SegTree {
     int delta = 0;
     int from = 0;
     int to = 0;
-    SegTree *left = nullptr;
-    SegTree *right = nullptr;
+    std::shared_ptr<SegTree> left = nullptr;
+    std::shared_ptr<SegTree> right = nullptr;
 
 public:
     SegTree(const SegTree &root) = default;
     explicit SegTree(int index) : from(index), to(index + 1) {}
-    SegTree(SegTree *left_, SegTree *right_) : left(left_), right(right_), from(left_->from), to(right_->to) {}
+    SegTree(const std::shared_ptr<SegTree>& lef, const std::shared_ptr<SegTree> &rig, int d = 0) :
+        left(lef), right(rig),
+        from(lef->from), to(rig->to),
+        delta(d) {}
 
     // recursively build the tree that represents range given
-    static SegTree *build(int from, int to) {
+    static std::shared_ptr<SegTree> build(int from, int to) {
         if (from + 1 == to) {
-            return new SegTree(from);
+            return std::make_shared<SegTree>(from);
         }
         int middle = (from + to) / 2;
-        SegTree *left_ = build(from, middle);
-        SegTree *right_ = build(middle, to);
-        return new SegTree(left_, right_);
+        std::shared_ptr<SegTree> left_ = build(from, middle);
+        std::shared_ptr<SegTree> right_ = build(middle, to);
+        return std::make_shared<SegTree>(left_, right_);
     }
 
     int get_accumulated(int index, int prev_value = 0) const {
@@ -43,52 +46,44 @@ public:
         }
     }
 
-    SegTree *add_to_range(int l, int r, int num) {
+    std::shared_ptr<SegTree> add_to_range(int l, int r, int num, const std::shared_ptr<SegTree> &shared_this) {
         if (to <= l or r <= from) {
-            return this;
+            return shared_this;
         }
         if (l <= from and to <= r) {
-            auto *copy = new SegTree(*this);
+            auto copy = std::make_shared<SegTree>(*this);
             copy->delta += num;
             return copy;
         }
-        auto new_left = left ? left->add_to_range(l, r, num) : nullptr;
-        auto new_right = right ? right->add_to_range(l, r, num) : nullptr;
-        return new SegTree(new_left, new_right);
-    }
-
-    void print(int depth = 0) const {
-        if (right)
-            right->print(depth + 1);
-        for (int i = 0; i < depth; ++i) {
-            std::cout << "   ";
-        }
-        std::cout << delta << "\n";
-        if (left) {
-            left->print(depth + 1);
-        }
+        auto new_left = left ? left->add_to_range(l, r, num, left) : nullptr;
+        auto new_right = right ? right->add_to_range(l, r, num, right) : nullptr;
+        return std::make_shared<SegTree>(new_left, new_right, delta);
     }
 };
 
 class PersistentTree {
-    std::vector<SegTree *> versions;
+    std::vector<std::shared_ptr<SegTree>> versions;
 public:
     PersistentTree() = default;
 
-    SegTree *current_version() {
-        return versions.back();
+    void init(int size) {
+        versions.push_back(SegTree::build(0, size));
     }
 
-    void save_version(SegTree * new_version) {
-        versions.push_back(new_version);
+    void copy_last_version() {
+        versions.push_back(versions.back());
     }
 
-    const SegTree *get_version(int i) const {
-        return versions[i];
+    void add_range_modify(int from, int to, int num) {
+        versions.back() = versions.back()->add_to_range(from, to, num, versions.back());
     }
 
     int count_versions() const {
         return (int) versions.size();
+    }
+
+    const std::shared_ptr<SegTree> get_version(int i) const {
+        return versions[i];
     }
 };
 
