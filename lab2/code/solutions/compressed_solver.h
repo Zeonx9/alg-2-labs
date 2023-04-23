@@ -6,6 +6,7 @@
 #define LAB1_ALG2_COMPRESSED_SOLVER_H
 
 #include "abstract_solver.h"
+
 #include <map>
 #include <set>
 
@@ -14,6 +15,7 @@ protected:
     std::map<int, int> x_mapper;
     std::map<int, int> y_mapper;
 
+    // O ( n )
     static void construct_mapper(std::map<int, int> &mapper, const std::set<int> &points) {
         int new_cord = 0;
         for (const auto &old_cord: points) {
@@ -22,6 +24,7 @@ protected:
         }
     }
 
+    // O ( log n )
     static int compressed_cord(const std::map<int, int> &mapper, int cord) {
         auto equal_iter = mapper.find(cord);
         if (equal_iter != mapper.end()) {

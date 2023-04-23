@@ -13,6 +13,7 @@ class Solver2 : public CompressedSolver {
 public:
     explicit Solver2(std::istream &is) : CompressedSolver(is) {}
 
+    // complexity O ( n ^ 3 )
     void preprocessing() override {
         if (rectangles.empty()) {
             return;
@@ -39,6 +40,7 @@ public:
         }
     }
 
+    // complexity O ( log n )
     int answer_for_point(const point &pt) override {
         if (rectangles.empty()) {
             return 0;

@@ -43,15 +43,6 @@ protected:
 
 public:
 
-    static std::fstream open_test_file(const std::string &file_name, std::ios::openmode mode) {
-        std::fstream file;
-        file.open("../lab2/test/" + file_name, mode);
-        if (!file.is_open()) {
-            throw std::invalid_argument("wrong file name");
-        }
-        return file;
-    }
-
     virtual void preprocessing() = 0;
 
     virtual int answer_for_point(const point &pt) = 0;

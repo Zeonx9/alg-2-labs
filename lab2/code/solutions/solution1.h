@@ -11,6 +11,7 @@ class Solver1 : public AbstractSolver {
 public:
     explicit Solver1(std::istream &is) : AbstractSolver(is) {}
 
+    // complexity O ( 1 )
     void preprocessing() override {}
 
     // complexity O ( n )

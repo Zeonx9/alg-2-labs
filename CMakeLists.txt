@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(lab1 lab1/main.cpp)
 
-add_executable(lab2 lab2/code/main.cpp lab2/code/abstract_solver.h lab2/code/solution1.h lab2/code/solution2.h lab2/code/solution3.h lab2/code/seg_tree.h lab2/code/compressed_solver.h)
+add_executable(lab2 lab2/code/main.cpp lab2/code/solutions/abstract_solver.h lab2/code/solutions/solution1.h lab2/code/solutions/solution2.h lab2/code/solutions/solution3.h lab2/code/solutions/seg_tree.h lab2/code/solutions/compressed_solver.h lab2/code/test_generation.h lab2/code/test_generation.h lab2/code/timing.h lab2/code/table_results.h)

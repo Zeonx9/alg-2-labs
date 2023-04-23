@@ -25,13 +25,18 @@ struct boundary {
 class Solver3 : public CompressedSolver {
     PersistentTree tree;
 
+    // O ( log n )
     void apply_boundary_change(const boundary &b) {
-        tree.add_range_modify(y_mapper[b.from], y_mapper[b.to] + 1, b.is_opening ? 1 : -1);
+        tree.add_range_modify(y_mapper[b.from], y_mapper[b.to] + 1, (b.is_opening ? 1 : -1));
     }
 
-    void create_version(std::vector<boundary>::iterator &it,
-                        const std::vector<boundary>::const_iterator &end,
-                        int cord, bool is_open) {
+    // O* ( log n )
+    void create_version(
+            std::vector<boundary>::iterator &it,
+            const std::vector<boundary>::const_iterator &end,
+            int cord,
+            bool is_open
+    ) {
         tree.copy_last_version();
         while (it < end and it->cord == cord and is_open == it->is_opening) {
             apply_boundary_change(*it);
@@ -42,6 +47,7 @@ class Solver3 : public CompressedSolver {
 public:
     explicit Solver3(std::istream &is) : CompressedSolver(is) {}
 
+    // Complexity O ( n * log n )
     void preprocessing() override {
         if (rectangles.empty()) {
             return;
@@ -67,6 +73,7 @@ public:
         }
     }
 
+    // Complexity O ( log n )
     int answer_for_point(const point &pt) override {
         if (rectangles.empty()) {
             return 0;

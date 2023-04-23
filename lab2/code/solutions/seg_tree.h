@@ -7,6 +7,7 @@
 
 
 #include <memory>
+#include <vector>
 
 class SegTree {
     int delta = 0;
@@ -24,6 +25,7 @@ public:
         delta(d) {}
 
     // recursively build the tree that represents range given
+    // complexity O(n * log n)
     static std::shared_ptr<SegTree> build(int from, int to) {
         if (from + 1 == to) {
             return std::make_shared<SegTree>(from);
@@ -34,6 +36,7 @@ public:
         return std::make_shared<SegTree>(left_, right_);
     }
 
+    // complexity O ( log n )
     int get_accumulated(int index, int prev_value = 0) const {
         int value = prev_value + delta;
         if (to - from == 1) {
@@ -46,6 +49,7 @@ public:
         }
     }
 
+    // complexity O ( log n )
     std::shared_ptr<SegTree> add_to_range(int l, int r, int num, const std::shared_ptr<SegTree> &shared_this) {
         if (to <= l or r <= from) {
             return shared_this;
@@ -63,26 +67,32 @@ public:
 
 class PersistentTree {
     std::vector<std::shared_ptr<SegTree>> versions;
+
 public:
     PersistentTree() = default;
 
+    // O ( n * log n )
     void init(int size) {
         versions.push_back(SegTree::build(0, size));
     }
 
+    // O ( 1 )
     void copy_last_version() {
         versions.push_back(versions.back());
     }
 
+    // O ( log n )
     void add_range_modify(int from, int to, int num) {
         versions.back() = versions.back()->add_to_range(from, to, num, versions.back());
     }
 
-    int count_versions() const {
+    // O ( 1 )
+    int count_versions() {
         return (int) versions.size();
     }
 
-    const std::shared_ptr<SegTree> get_version(int i) const {
+    // O ( 1 )
+    std::shared_ptr<SegTree> get_version(int i) {
         return versions[i];
     }
 };
