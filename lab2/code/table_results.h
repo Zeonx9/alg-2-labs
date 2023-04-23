@@ -13,19 +13,19 @@
 template<class T>
 void create_table_with_results(const std::string &label, int to = 524288, int from = 1, int step = 2) {
     // create file and write header into .csv file
-    auto table_file = open_file("tables/table_" + label + ".csv", std::ios::out);
+    auto table_file = files::open_file("tables/table_" + label + ".csv", std::ios::out);
     table_file << "n,algorithm,operation,time\n";
 
     for (int i = from; i <= to; i *= step) {
         std::cout << i << "\n";
 
         // construct a solver using given file
-        auto file_in = open_test_file(i);
+        auto file_in = files::open_test_file(i);
         T solver(file_in);
         file_in.close();
 
         // test the solver
-        auto file_out = open_result_file(i);
+        auto file_out = files::open_result_file(i);
         auto [t1, t2] = test_solver_class(solver, file_out);
         file_out.close();
 

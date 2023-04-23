@@ -12,7 +12,7 @@
 #include "solutions/solution2.h"
 
 int main() {
-    generate_all_tests();
+    tests::generate_all_tests();
     create_table_with_results<Solver1>("naive");
     create_table_with_results<Solver3>("tree", 26144);
     create_table_with_results<Solver2>("map", 2048);

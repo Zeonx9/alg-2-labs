@@ -9,6 +9,7 @@
 #include <chrono>
 #include "solutions/abstract_solver.h"
 
+// returns time of execution of provided method
 long long measure_method_executing_time(const std::function<void(void)> &method) {
     auto start = std::chrono::high_resolution_clock::now();
     method();
@@ -16,6 +17,7 @@ long long measure_method_executing_time(const std::function<void(void)> &method)
     return std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 }
 
+// calls methods of given solver and returns a pair of times of execution
 std::pair<long long, long long> test_solver_class(AbstractSolver &solver, std::ostream &os) {
     long long process_time = measure_method_executing_time([&solver]() {
         solver.preprocessing();
