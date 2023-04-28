@@ -11,7 +11,7 @@
 #include "timing.h"
 
 template<class T>
-void create_table_with_results(const std::string &label, int to = 524288, int from = 1, int step = 2) {
+void create_table_with_results(const std::string &label, int to = 524288, int from = 2, int step = 2) {
     // create file and write header into .csv file
     auto table_file = files::open_file("tables/table_" + label + ".csv", std::ios::out);
     table_file << "n,algorithm,operation,time\n";

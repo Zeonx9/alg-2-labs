@@ -25,7 +25,7 @@ public:
         delta(d) {}
 
     // recursively build the tree that represents range given
-    // complexity O(n * log n)
+    // complexity O ( n )
     static std::shared_ptr<SegTree> build(int from, int to) {
         if (from + 1 == to) {
             return std::make_shared<SegTree>(from);
