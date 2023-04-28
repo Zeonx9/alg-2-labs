@@ -95,7 +95,7 @@ namespace tests {
     void generate_test_file(int n) {
         std::string file_name = "tests/test" + std::to_string(n) + ".txt";
         auto file = files::open_file(file_name, std::ios::out);
-        write_data_of_input_file(file, n, 1000);
+        write_data_of_input_file(file, n, 10000);
         file.close();
     }
 

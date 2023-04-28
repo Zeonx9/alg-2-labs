@@ -12,10 +12,10 @@
 #include "solutions/solution2.h"
 
 int main() {
-    tests::generate_all_tests();
-    create_table_with_results<Solver1>("naive");
-    create_table_with_results<Solver3>("tree", 26144);
-    create_table_with_results<Solver2>("map", 2048);
+//    tests::generate_all_tests();
+//    create_table_with_results<Solver1>("naive");
+    create_table_with_results<Solver3>("tree", 262144);
+//    create_table_with_results<Solver2>("map", 2048);
 }
 
 #endif
